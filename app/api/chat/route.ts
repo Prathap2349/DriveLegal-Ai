@@ -1,4 +1,4 @@
-import { groq } from '@ai-sdk/groq';
+import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 
 // Allow streaming responses up to 30 seconds
@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const { messages, lawsContext } = await req.json();
 
   const systemContext = `
-You are the DriveLegal Tamil Nadu AI Assistant. 
+You are the DriveLegal Tamil Nadu AI Assistant.
 You are an expert in traffic laws, violations, and fines strictly for Tamil Nadu districts.
 Keep your answers brief, professional, and easy to read. Use Markdown.
 
@@ -19,7 +19,7 @@ If the user asks about a location or fine not in this list, say that the specifi
   `;
 
   const result = await streamText({
-    model: groq('llama-3.1-8b-instant'),
+    model: openai('gpt-4o-mini'),
     system: systemContext,
     messages,
     temperature: 0.7,
