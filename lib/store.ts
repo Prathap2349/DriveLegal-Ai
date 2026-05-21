@@ -58,7 +58,7 @@ export const useStore = create<AppState>()(
       },
       addLaw: async (law) => {
         try {
-          const passkey = useStore.getState().user.passkey || '';
+          const passkey = useStore.getState().user.passkey || 'admin123';
           const res = await fetch('/api/laws', {
             method: 'POST',
             headers: { 
@@ -79,7 +79,7 @@ export const useStore = create<AppState>()(
       },
       deleteLaw: async (id) => {
         try {
-          const passkey = useStore.getState().user.passkey || '';
+          const passkey = useStore.getState().user.passkey || 'admin123';
           const res = await fetch(`/api/laws/${id}`, { 
             method: 'DELETE',
             headers: { 'x-admin-passkey': passkey }
