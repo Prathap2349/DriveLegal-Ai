@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DriveLegal TN 🚦
 
-## Getting Started
+> AI-Powered Tamil Nadu Traffic Laws & Compliance Platform
 
-First, run the development server:
+[![Live Demo](https://img.shields.io/badge/Live-drive--legal--ai.vercel.app-green?style=for-the-badge)](https://drive-legal-ai.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge)](https://nextjs.org)
+[![Groq AI](https://img.shields.io/badge/Groq-LLaMA3-orange?style=for-the-badge)](https://groq.com)
+
+Built for **Road Safety Hackathon 2026** — CoERS, RBG Labs, IIT Madras  
+Topic: **DriveLegal** | Team: **DriveLegal TN** | By: **Prathap S**
+
+---
+
+## 🌐 Live Demo
+
+**[drive-legal-ai.vercel.app](https://drive-legal-ai.vercel.app)**
+
+---
+
+## 📌 About
+
+DriveLegal TN is a full-stack AI-powered web platform that provides Tamil Nadu citizens instant access to:
+- Location-specific traffic laws and fine schedules
+- AI chatbot for real-time legal guidance in English & Tamil
+- Interactive district map with local rules and contacts
+- Vehicle-specific rules and challan calculator
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🤖 **AI Chat Assistant** | Groq LLaMA 3 powered chatbot — bilingual English/Tamil with voice input |
+| 🗺️ **District Map** | Interactive Tamil Nadu map with real DB data per district |
+| 🚗 **Vehicle Rules** | Dynamic rules filtered by vehicle type from live database |
+| 📊 **Admin Dashboard** | Publish & manage traffic rules by vehicle type and category |
+| 🏆 **Road Safety Quiz** | Multi-level quiz with Motor Vehicle Act references |
+| 💰 **Challan Calculator** | Fine lookup by violation type and vehicle class |
+| 🌐 **Bilingual Support** | Full English / Tamil language toggle |
+| 📱 **PWA** | Installable as mobile app |
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Next.js 16, React, TypeScript, Tailwind CSS, Zustand
+- **AI:** Groq API (LLaMA 3)
+- **Database:** PostgreSQL (Neon) + Prisma ORM
+- **Deployment:** Vercel + GitHub CI/CD
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- A Groq API key (free at [console.groq.com](https://console.groq.com))
+- A PostgreSQL database (free at [neon.tech](https://neon.tech))
+
+### Installation
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/Prathap2349/DriveLegal-Ai
+cd DriveLegal-Ai
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables
+cp .env.example .env.local
+# Add your GROQ_API_KEY and DATABASE_URL
+
+# 4. Set up the database
+npx prisma generate
+npx prisma db push
+
+# 5. Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔑 Environment Variables
 
-## Learn More
+Create a `.env.local` file:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+DATABASE_URL=your_postgresql_connection_string_here
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Project Structure
 
-## Deploy on Vercel
+```
+DriveLegal-Ai/
+├── app/
+│   ├── chat/          # AI chatbot page
+│   ├── map/           # District map page
+│   ├── vehicles/      # Vehicle rules page
+│   ├── quiz/          # Road safety quiz
+│   ├── admin/         # Admin dashboard
+│   └── api/           # API routes
+├── components/        # Reusable UI components
+├── prisma/
+│   └── schema.prisma  # Database schema
+├── lib/               # Utility functions
+└── public/            # Static assets
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗄️ Database Schema
+
+```prisma
+model Law {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  category    String   // City / Highway / General
+  vehicleType String   // 2-Wheeler / Auto / Lorry / Bus / General
+  fine        Float
+  section     String
+  district    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+```
+
+---
+
+## 🌏 BIMSTEC Scalability
+
+This platform is designed to scale to any BIMSTEC nation:
+- ✅ Architecture works for any country
+- ✅ Only database content needs updating
+- ✅ No code changes required for new regions
+- ✅ Open APIs used throughout
+
+---
+
+## 📄 License
+
+This project was built for the Road Safety Hackathon 2026 by CoERS, RBG Labs, IIT Madras.
+
+---
+
+*Made with ❤️ for safer roads in Tamil Nadu and beyond*
