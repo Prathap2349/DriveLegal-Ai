@@ -23,7 +23,9 @@ export default function AdminDashboard() {
     title: '',
     desc: '',
     authority: 'TN Transport Dept.',
-    penalty: ''
+    penalty: '',
+    vehicleType: 'All',
+    category: 'General' as 'General' | 'City' | 'Highway'
   })
 
   useEffect(() => {
@@ -46,9 +48,11 @@ export default function AdminDashboard() {
       title: newLaw.title,
       desc: newLaw.desc,
       authority: newLaw.authority,
-      penalty: newLaw.penalty
+      penalty: newLaw.penalty,
+      vehicleType: newLaw.vehicleType === 'All' ? undefined : newLaw.vehicleType,
+      category: newLaw.category
     })
-    setNewLaw({ ...newLaw, title: '', desc: '', penalty: '' })
+    setNewLaw({ ...newLaw, title: '', desc: '', penalty: '', vehicleType: 'All', category: 'General' })
   }
 
   return (
@@ -104,6 +108,36 @@ export default function AdminDashboard() {
                   </select>
                 </div>
               )}
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Vehicle Type</label>
+                <select 
+                  value={newLaw.vehicleType}
+                  onChange={(e) => setNewLaw({ ...newLaw, vehicleType: e.target.value })}
+                  className="w-full text-gray-900 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[var(--color-brand-green)] outline-none"
+                >
+                  <option value="All">All Vehicles</option>
+                  <option value="2-Wheeler">2-Wheeler</option>
+                  <option value="4-Wheeler">4-Wheeler</option>
+                  <option value="Auto">Auto Rickshaw</option>
+                  <option value="Bus">Bus</option>
+                  <option value="Lorry">Lorry</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Category</label>
+                <select 
+                  value={newLaw.category}
+                  onChange={(e) => setNewLaw({ ...newLaw, category: e.target.value as any })}
+                  className="w-full text-gray-900 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[var(--color-brand-green)] outline-none"
+                >
+                  <option value="General">General</option>
+                  <option value="City">City limits</option>
+                  <option value="Highway">Highway</option>
+                </select>
+              </div>
+
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Rule Title</label>
@@ -162,10 +196,20 @@ export default function AdminDashboard() {
             {laws.map(law => (
               <div key={law.id} className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col sm:flex-row justify-between gap-6 hover:shadow-md transition-shadow">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-brand-green)] bg-green-50 px-2 py-1 rounded">
                       {law.tier} {law.tier === 'local' && `- ${law.district}`}
                     </span>
+                    {law.vehicleType && law.vehicleType !== 'All' && (
+                      <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                        {law.vehicleType}
+                      </span>
+                    )}
+                    {law.category && law.category !== 'General' && (
+                      <span className="text-xs font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-1 rounded">
+                        {law.category}
+                      </span>
+                    )}
                     <span className="text-xs text-gray-500 font-mono">{law.authority}</span>
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 leading-tight">{law.title}</h3>
