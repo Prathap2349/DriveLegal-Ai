@@ -30,7 +30,7 @@ export default function AdminLogin() {
       })
       const data = await response.json()
       if (response.ok && data.success) {
-        loginAsAdmin("TN Police Authority")
+        loginAsAdmin("TN Police Authority", passkey)
         router.push("/admin/dashboard")
       } else {
         setError(data.error || "Invalid passkey.")

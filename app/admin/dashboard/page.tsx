@@ -349,7 +349,7 @@ export default function AdminDashboard() {
                   key={idx}
                   onClick={() => handleApplyPreset(p)}
                   type="button"
-                  className="text-left text-xs bg-gray-50 hover:bg-[var(--color-brand-green)] hover:text-white border border-gray-200 p-2.5 rounded-xl transition-all font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs truncate"
+                  className="text-left text-xs bg-gray-50 text-gray-900 hover:bg-[var(--color-brand-green)] hover:text-white border border-gray-200 p-2.5 rounded-xl transition-all font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs truncate"
                 >
                   <span className="truncate">{p.label}</span>
                 </button>
