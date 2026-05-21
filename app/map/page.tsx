@@ -5,6 +5,7 @@ import { Map, AlertTriangle, Scale, ArrowRight, X, Phone, ShieldAlert, BadgeAler
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import Link from "next/link";
+import { CustomSelect } from "@/components/CustomSelect";
 
 const TN_DISTRICTS = [
   "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi", "Kanchipuram", 
@@ -146,45 +147,57 @@ export default function DistrictMap() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
       <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4 flex justify-center items-center gap-4">
-          <Map className="w-10 h-10 text-[var(--color-brand-green)]" /> Tamil Nadu District Analytics Map
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
+          <Map className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--color-brand-green)]" /> Tamil Nadu District Analytics Map
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto text-lg">Select any of the 38 districts to aggregate active local regulations, fine metrics, and road safety contacts.</p>
+        <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto">Select any of the 38 districts to aggregate active local regulations, fine metrics, and road safety contacts.</p>
       </div>
 
-      <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 relative overflow-hidden">
+      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 relative overflow-hidden">
         
-        {/* District Grid (Acts as our map) */}
-        <div className="flex-1 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-          {TN_DISTRICTS.map((district) => {
-            const hasLocalRules = laws.some(l => l.tier === 'local' && l.district === district);
-            return (
-              <button
-                key={district}
-                onClick={() => setSelectedDistrict(district)}
-                className={`p-3 rounded-lg text-xs font-bold transition-all border flex flex-col items-center justify-center gap-1 ${
-                  selectedDistrict === district 
-                  ? 'bg-[var(--color-brand-green)] text-white border-[var(--color-brand-green)] shadow-lg transform scale-105 z-10' 
-                  : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-green-50 hover:text-[var(--color-brand-green)] hover:border-green-200'
-                }`}
-              >
-                <span>{district}</span>
-                {hasLocalRules && selectedDistrict !== district && (
-                  <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" title="Has custom local rules" />
-                )}
-              </button>
-            );
-          })}
+        {/* District Grid & Mobile Selector (Acts as our map) */}
+        <div className="flex-1 flex flex-col gap-6">
+          <div className="md:hidden">
+            <label className="block text-sm font-bold text-gray-700 mb-2">Pick a District</label>
+            <CustomSelect
+              value={selectedDistrict || ""}
+              onChange={setSelectedDistrict}
+              options={TN_DISTRICTS.map(d => ({ label: d, value: d }))}
+              placeholder="Select a District"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 max-h-[350px] overflow-y-auto md:max-h-none md:overflow-visible pr-1 md:pr-0">
+            {TN_DISTRICTS.map((district) => {
+              const hasLocalRules = laws.some(l => l.tier === 'local' && l.district === district);
+              return (
+                <button
+                  key={district}
+                  onClick={() => setSelectedDistrict(district)}
+                  className={`p-3 rounded-lg text-xs font-bold transition-all border flex flex-col items-center justify-center gap-1 min-h-[50px] ${
+                    selectedDistrict === district 
+                    ? 'bg-[var(--color-brand-green)] text-white border-[var(--color-brand-green)] shadow-lg transform scale-105 z-10' 
+                    : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-green-50 hover:text-[var(--color-brand-green)] hover:border-green-200'
+                  }`}
+                >
+                  <span>{district}</span>
+                  {hasLocalRules && selectedDistrict !== district && (
+                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" title="Has custom local rules" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Info Panel Overlay */}
         <AnimatePresence>
           {activeData && (
             <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="md:w-80 bg-[var(--color-brand-dark)] text-white rounded-2xl p-6 shadow-2xl relative flex flex-col justify-between"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="w-full md:w-80 bg-[var(--color-brand-dark)] text-white rounded-2xl p-6 shadow-2xl relative flex flex-col justify-between"
             >
               <div>
                 <button 

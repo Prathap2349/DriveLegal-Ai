@@ -35,11 +35,16 @@ export function CustomSelect({ value, onChange, options, placeholder, className,
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-12 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-green)] transition-all flex items-center justify-between text-left"
+        className={cn(
+          "w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-green)] transition-all flex items-center justify-between text-left",
+          icon ? "pl-12" : "pl-4"
+        )}
       >
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center">
-          {icon}
-        </div>
+        {icon && (
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center">
+            {icon}
+          </div>
+        )}
         <span className={!selectedOption ? "text-gray-400" : ""}>
           {selectedOption ? selectedOption.label : placeholder || "Select..."}
         </span>

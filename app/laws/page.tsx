@@ -34,8 +34,8 @@ export default function LawsDatabase() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
       <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Traffic Laws Database</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto text-lg">Browse official motor vehicle acts, violations, and fine schedules active in Tamil Nadu.</p>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Traffic Laws Database</h1>
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">Browse official motor vehicle acts, violations, and fine schedules active in Tamil Nadu.</p>
       </div>
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-10 flex flex-col md:flex-row gap-4">

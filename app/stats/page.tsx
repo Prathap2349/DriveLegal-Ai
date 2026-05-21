@@ -33,8 +33,8 @@ export default function RoadSafetyStats() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
       <div className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">TN Road Safety Analytics</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto text-lg">Real-time data visualization of traffic violations, fine collections, and accident black spots across Tamil Nadu.</p>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">TN Road Safety Analytics</h1>
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">Real-time data visualization of traffic violations, fine collections, and accident black spots across Tamil Nadu.</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
@@ -87,10 +87,10 @@ export default function RoadSafetyStats() {
             {BLACK_SPOTS.map((spot) => (
               <div key={spot.rank} className="flex items-center justify-between p-4 bg-orange-50 rounded-xl border border-orange-100">
                 <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 bg-orange-500 text-white font-bold rounded-full flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 bg-orange-500 text-white font-bold rounded-full flex items-center justify-center shrink-0 text-sm">
                     {spot.rank}
                   </div>
-                  <span className="font-bold text-gray-900">{spot.name}</span>
+                  <span className="font-bold text-gray-900 text-xs sm:text-sm md:text-base">{spot.name}</span>
                 </div>
                 <div className="text-right">
                   <span className="block font-black text-orange-600 text-lg">{spot.cases}</span>

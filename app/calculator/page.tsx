@@ -41,8 +41,8 @@ export default function ChallanCalculator() {
         <div className="w-16 h-16 bg-[var(--color-brand-green)]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Calculator className="w-8 h-8 text-[var(--color-brand-green)]" />
         </div>
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Challan Calculator</h1>
-        <p className="text-gray-600 max-w-xl mx-auto">Get accurate traffic fine estimates based on your specific district in Tamil Nadu.</p>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Challan Calculator</h1>
+        <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">Get accurate traffic fine estimates based on your specific district in Tamil Nadu.</p>
       </div>
 
       <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
@@ -109,8 +109,8 @@ export default function ChallanCalculator() {
                     <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-6">
                       <AlertCircle className="w-10 h-10 text-red-600" />
                     </div>
-                    <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{result.title}</h2>
-                    <p className="text-gray-500 mb-8">{result.tier === 'state' ? 'Statewide Rule' : `${result.district} District`}</p>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">{result.title}</h2>
+                    <p className="text-sm text-gray-500 mb-8">{result.tier === 'state' ? 'Statewide Rule' : `${result.district} District`}</p>
                     
                     <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 inline-block text-left w-full max-w-md mx-auto shadow-inner">
                       <div className="mb-4">

@@ -57,26 +57,26 @@ export default function Home() {
                 </div>
               </div>
 
-              <h1 className="text-5xl font-extrabold tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
                 தமிழ்நாடு போக்குவரத்து விதிகள் <br/>
-                <span className="text-[var(--color-brand-green-light)] text-3xl md:text-4xl">Tamil Nadu Traffic Rules & Fines</span>
+                <span className="text-[var(--color-brand-green-light)] text-xl sm:text-2xl md:text-4xl">Tamil Nadu Traffic Rules & Fines</span>
               </h1>
-              <p className="text-lg text-gray-300 max-w-xl mt-6 leading-relaxed">
+              <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-xl mt-6 leading-relaxed">
                 The official AI-powered portal for all traffic regulations across Tamil Nadu. Stay informed, avoid penalties, and drive safely.
               </p>
             </motion.div>
             
             <motion.div 
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex flex-wrap gap-4 pt-4"
+              className="flex flex-col sm:flex-row flex-wrap gap-4 pt-4 w-full"
             >
-              <Link href="/calculator" className="bg-[var(--color-brand-green)] hover:bg-[var(--color-brand-green-light)] text-white px-6 py-4 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg shadow-green-900/50 flex-1 min-w-[200px] justify-center">
+              <Link href="/calculator" className="bg-[var(--color-brand-green)] hover:bg-[var(--color-brand-green-light)] text-white px-5 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-102 shadow-lg shadow-green-900/50 justify-center w-full sm:w-auto sm:flex-1 sm:min-w-[180px]">
                 <Calculator className="w-5 h-5" /> Check Fine (₹)
               </Link>
-              <Link href="/chat" className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-4 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg flex-1 min-w-[200px] justify-center">
+              <Link href="/chat" className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-102 shadow-lg justify-center w-full sm:w-auto sm:flex-1 sm:min-w-[180px]">
                 <MessageSquare className="w-5 h-5" /> Ask AI Bot
               </Link>
-              <Link href="/laws" className="bg-white text-[var(--color-brand-dark)] hover:bg-gray-100 px-6 py-4 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg flex-1 min-w-[200px] justify-center border border-gray-200">
+              <Link href="/laws" className="bg-white text-[var(--color-brand-dark)] hover:bg-gray-100 px-5 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all transform hover:scale-102 shadow-lg justify-center border border-gray-200 w-full sm:w-auto sm:flex-1 sm:min-w-[180px]">
                 <BookOpen className="w-5 h-5" /> Know the Law
               </Link>
             </motion.div>
