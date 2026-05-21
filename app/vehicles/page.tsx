@@ -1,61 +1,119 @@
-import { AlertTriangle, Car, Truck, Bus } from "lucide-react";
+import { AlertTriangle, Car, Truck, Bus, ShieldAlert } from "lucide-react";
+import { PrismaClient } from "@prisma/client";
+import defaultLawsData from '@/data/laws.json';
 
-export default function VehiclesPage() {
+const prisma = new PrismaClient();
+
+const VEHICLE_CONFIGS: Record<string, { title: string, icon: any, bg: string, text: string }> = {
+  '2-Wheeler': {
+    title: '2-Wheelers (Bikes & Scooters)',
+    icon: AlertTriangle,
+    bg: 'bg-blue-100',
+    text: 'text-blue-600'
+  },
+  '4-Wheeler': {
+    title: '4-Wheelers (Cars & SUVs)',
+    icon: Car,
+    bg: 'bg-indigo-100',
+    text: 'text-indigo-600'
+  },
+  'Auto': {
+    title: 'Auto Rickshaws',
+    icon: ShieldAlert,
+    bg: 'bg-yellow-100',
+    text: 'text-yellow-600'
+  },
+  'Bus': {
+    title: 'Buses & School Vans',
+    icon: Bus,
+    bg: 'bg-green-100',
+    text: 'text-green-600'
+  },
+  'Lorry': {
+    title: 'Commercial Lorries & Trucks',
+    icon: Truck,
+    bg: 'bg-orange-100',
+    text: 'text-orange-600'
+  }
+};
+
+export default async function VehiclesPage() {
+  let laws: any[] = [];
+  try {
+    laws = await prisma.law.findMany({
+      where: {
+        AND: [
+          { vehicleType: { not: 'All' } },
+          { vehicleType: { not: null } }
+        ]
+      },
+      orderBy: {
+        title: 'asc'
+      }
+    });
+  } catch (error) {
+    console.error("Failed to fetch vehicle rules from database:", error);
+  }
+
+  // Fallback to static seed data if DB is empty or fails to query
+  if (laws.length === 0) {
+    laws = (defaultLawsData as any[]).filter(l => l.vehicleType && l.vehicleType !== 'All');
+  }
+
+  // Group rules by vehicleType
+  const groupedRules: Record<string, any[]> = {};
+  laws.forEach(law => {
+    const type = law.vehicleType || 'Other';
+    if (!groupedRules[type]) {
+      groupedRules[type] = [];
+    }
+    groupedRules[type].push(law);
+  });
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl flex-1">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Vehicle Specific Rules</h1>
-        <p className="text-gray-600 max-w-xl mx-auto">Tamil Nadu traffic regulations categorized by vehicle type.</p>
+        <p className="text-gray-600 max-w-xl mx-auto">Tamil Nadu traffic regulations categorized by vehicle type, fetched dynamically.</p>
       </div>
       
       <div className="space-y-6">
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 flex items-start gap-4">
-          <div className="bg-blue-100 p-3 rounded-xl text-blue-600 shrink-0"><AlertTriangle className="w-6 h-6" /></div>
-          <div>
-            <h3 className="text-xl font-bold mb-2">2-Wheelers (Bikes & Scooters)</h3>
-            <ul className="list-disc pl-5 text-gray-600 space-y-1 text-sm">
-              <li>Helmets are mandatory for BOTH rider and pillion passenger across all TN districts.</li>
-              <li>Maximum 2 persons allowed per vehicle (No triple riding).</li>
-              <li>Saree guards and grab rails are mandatory for registration.</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 flex items-start gap-4">
-          <div className="bg-yellow-100 p-3 rounded-xl text-yellow-600 shrink-0"><Car className="w-6 h-6" /></div>
-          <div>
-            <h3 className="text-xl font-bold mb-2">Auto Rickshaws</h3>
-            <ul className="list-disc pl-5 text-gray-600 space-y-1 text-sm">
-              <li>Digital fare meters must be installed and active (Strictly enforced in Chennai).</li>
-              <li>Maximum capacity: Driver + 3 adult passengers.</li>
-              <li>Commercial permit must be visibly displayed.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 flex items-start gap-4">
-          <div className="bg-orange-100 p-3 rounded-xl text-orange-600 shrink-0"><Truck className="w-6 h-6" /></div>
-          <div>
-            <h3 className="text-xl font-bold mb-2">Commercial Lorries & Trucks</h3>
-            <ul className="list-disc pl-5 text-gray-600 space-y-1 text-sm">
-              <li>Heavy vehicles are banned from entering city limits during peak hours (8 AM - 11 AM & 4 PM - 8 PM).</li>
-              <li>Strict weight limit checks at NH toll plazas (Overloading fine: ₹20,000 + ₹2,000/tonne).</li>
-              <li>Reflective tapes mandatory on all sides.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 flex items-start gap-4">
-          <div className="bg-green-100 p-3 rounded-xl text-green-600 shrink-0"><Bus className="w-6 h-6" /></div>
-          <div>
-            <h3 className="text-xl font-bold mb-2">School Vans & Buses</h3>
-            <ul className="list-disc pl-5 text-gray-600 space-y-1 text-sm">
-              <li>Vehicle must be painted in standard yellow color with "School Bus" clearly written.</li>
-              <li>Speed governors must be installed limiting speed to 40 km/h.</li>
-              <li>An attendant must be present to help children board and alight.</li>
-            </ul>
-          </div>
-        </div>
+        {Object.entries(VEHICLE_CONFIGS).map(([type, config]) => {
+          const rules = groupedRules[type] || [];
+          if (rules.length === 0) return null;
+          
+          const Icon = config.icon;
+          
+          return (
+            <div key={type} className="bg-white p-6 rounded-2xl border border-gray-200 flex items-start gap-4 hover:shadow-lg transition-all duration-300">
+              <div className={`${config.bg} p-3 rounded-xl ${config.text} shrink-0`}>
+                <Icon className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-3 text-gray-900">{config.title}</h3>
+                <ul className="list-disc pl-5 text-gray-600 space-y-2 text-sm">
+                  {rules.map((rule) => (
+                    <li key={rule.id} className="leading-relaxed">
+                      <span className="font-bold text-gray-800">{rule.title}</span>
+                      {rule.category && rule.category !== 'General' && (
+                        <span className="ml-2 text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                          {rule.category}
+                        </span>
+                      )}
+                      {rule.district && rule.district !== 'All' && (
+                        <span className="ml-2 text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
+                          {rule.district}
+                        </span>
+                      )}
+                      : {rule.desc} 
+                      <span className="ml-2 font-black text-red-600 whitespace-nowrap">({rule.penalty})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
