@@ -41,3 +41,16 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# local databases & logs
+*.db
+*.db-journal
+dev.db
+dev.db*
+dev.log
+dev.db"DATABASE_URL="file:.
+
+# environment files & macOS metadata
+.env.local
+__MACOSX
+__MACOSX/

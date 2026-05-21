@@ -4,23 +4,39 @@ import Link from "next/link";
 import { Calculator, BookOpen, MessageSquare, Phone, AlertTriangle, ChevronRight, ShieldAlert, FileText, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-
-const TICKER_ITEMS = [
-  "🚨 New speed limits active on ECR from this week.",
-  "📢 Helmet mandatory for pillion riders across all TN districts.",
-  "⚠️ Special drive against drunk driving this weekend in Chennai.",
-  "ℹ️ Pay challans online via the official TN eChallan portal."
-];
+import { useStore } from "@/lib/store";
 
 export default function Home() {
   const [tickerIndex, setTickerIndex] = useState(0);
+  const { laws, fetchLaws } = useStore();
 
   useEffect(() => {
+    fetchLaws();
+  }, [fetchLaws]);
+
+  // Combine fallback/default tips with dynamic database laws
+  const baseItems = [
+    "📢 Helmet mandatory for pillion riders across all TN districts (Sec 129 MV Act).",
+    "⚠️ Zero tolerance special drive against drunk driving in Chennai and urban hubs.",
+    "ℹ️ Citizens can pay traffic fines online via the official national eChallan portal."
+  ];
+
+  const dbItems = laws
+    .slice(0, 3)
+    .map(law => `🚨 Active Regulation: ${law.title} in ${law.district} - Fine: ${law.penalty}`);
+
+  const tickerItems = dbItems.length > 0 ? [...dbItems, ...baseItems] : [
+    "🚨 New speed limits active on ECR from this week.",
+    ...baseItems
+  ];
+
+  useEffect(() => {
+    if (tickerItems.length === 0) return;
     const interval = setInterval(() => {
-      setTickerIndex((prev) => (prev + 1) % TICKER_ITEMS.length);
+      setTickerIndex((prev) => (prev + 1) % tickerItems.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [tickerItems.length]);
 
   return (
     <div className="flex flex-col flex-1">
@@ -34,8 +50,13 @@ export default function Home() {
           exit={{ y: -20, opacity: 0 }}
           className="truncate"
         >
-          {TICKER_ITEMS[tickerIndex]}
+          {tickerItems[tickerIndex]}
         </motion.div>
+      </div>
+
+      {/* Disclaimer Banner */}
+      <div className="bg-amber-500/10 border-b border-amber-500/20 text-amber-800 text-xs py-2.5 px-4 text-center font-semibold">
+        ⚠️ <strong>Disclaimer:</strong> DriveLegal TN is a student project created for the Road Safety Hackathon 2026 (CoERS, IIT Madras). This is NOT an official government website, and the information presented here should not be treated as official legal or police advice.
       </div>
 
       {/* Hero Section */}

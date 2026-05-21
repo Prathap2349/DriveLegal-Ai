@@ -340,7 +340,7 @@ export default function AdminDashboard() {
           
           {/* Quick Select Presets Toolbar */}
           <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" /> Quick-Publish Preset Templates
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2">
@@ -488,7 +488,7 @@ export default function AdminDashboard() {
           {/* Live Interactive Preview Card */}
           <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-6 overflow-hidden">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center gap-2">
                 <Eye className="w-4 h-4" /> Live Card Preview
               </h3>
               <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full uppercase tracking-widest animate-pulse">Draft</span>

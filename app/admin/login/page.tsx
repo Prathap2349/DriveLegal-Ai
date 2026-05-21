@@ -10,16 +10,35 @@ export default function AdminLogin() {
   const [passkey, setPasskey] = useState("")
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
   const loginAsAdmin = useStore(state => state.loginAsAdmin)
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (passkey === "admin123") {
-      loginAsAdmin("TN Police Authority")
-      router.push("/admin/dashboard")
-    } else {
-      setError("Invalid passkey.")
+    setError("")
+    if (!passkey.trim()) {
+      setError("Passkey cannot be empty.")
+      return
+    }
+    setLoading(true)
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passkey }),
+      })
+      const data = await response.json()
+      if (response.ok && data.success) {
+        loginAsAdmin("TN Police Authority")
+        router.push("/admin/dashboard")
+      } else {
+        setError(data.error || "Invalid passkey.")
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -54,12 +73,16 @@ export default function AdminLogin() {
             </button>
           </div>
           {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
-          <button type="submit" className="w-full bg-[var(--color-brand-dark)] hover:bg-black text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors">
-            Secure Access <ArrowRight className="w-5 h-5" />
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full bg-[var(--color-brand-dark)] hover:bg-black disabled:bg-gray-400 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:cursor-not-allowed"
+          >
+            {loading ? "Verifying..." : "Secure Access"} <ArrowRight className="w-5 h-5" />
           </button>
         </form>
         
-        <p className="mt-6 text-xs text-gray-400">Mock passkey for hackathon: admin123</p>
+        <p className="mt-6 text-xs text-gray-400">Mock passkey for testing: admin123 (configurable in .env)</p>
       </motion.div>
     </div>
   )

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { getServerSession } from 'next-auth/next';
 
 export async function GET() {
   try {
@@ -16,8 +15,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    // Basic auth check placeholder before NextAuth is fully integrated
-    // We will rely on NextAuth session in the next step
+    const session = await getServerSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { title, desc, tier, district, authority, penalty, vehicleType, category } = body;
 

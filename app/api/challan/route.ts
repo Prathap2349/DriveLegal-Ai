@@ -1,15 +1,19 @@
 import { NextResponse } from 'next/server';
-import lawsData from '@/data/laws.json';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
     const { district, violationTitle } = await req.json();
     
-    // In a real app, we would query a DB. Here we query the JSON fallback
-    const result = lawsData.find(l => 
-      l.title === violationTitle && 
-      (l.tier === 'state' || l.district === district)
-    );
+    const result = await prisma.law.findFirst({
+      where: {
+        title: violationTitle,
+        OR: [
+          { tier: 'state' },
+          { district }
+        ]
+      }
+    });
 
     if (result) {
       return NextResponse.json({ success: true, result });
