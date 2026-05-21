@@ -2,16 +2,39 @@
 
 import { Send, Bot, User, MapPin, Mic, MicOff } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore } from "@/lib/store";
 
 type Message = { id: string, role: 'user' | 'assistant', content: string };
 
-const SUGGESTED_PROMPTS = [
-  "என் ஊரில் ஹெல்மெட் அணிவது கட்டாயமா?",
-  "Chennai-la speed limit என்ன?",
-  "No parking fine TN-la எவ்வளவு?"
-];
+const T = {
+  en: {
+    welcomeMessage: 'Vanakkam! I am the DriveLegal TN AI Assistant. Ask me anything about traffic laws, fines, or rules in Tamil Nadu. (You can ask in English or Tamil!)',
+    suggestedPrompts: [
+      "Is wearing a helmet mandatory for pillion riders?",
+      "What is the speed limit in Chennai?",
+      "How much is the fine for no parking in TN?"
+    ],
+    title: "TN Traffic AI Assistant",
+    subtitle: "Ask in Tamil or English",
+    contextLabel: "Tamil Nadu Context",
+    inputPlaceholder: "Ask about fine amounts, traffic laws, or rules...",
+    toggleLangBtn: "தமிழில் பேச (Ask in Tamil)"
+  },
+  ta: {
+    welcomeMessage: 'வணக்கம்! நான் டிரைவ்லீகல் தமிழ்நாடு AI உதவியாளர். தமிழ்நாட்டில் போக்குவரத்து விதிகள், அபராதங்கள் அல்லது சட்டங்கள் பற்றி என்னிடம் கேளுங்கள். (நீங்கள் தமிழ் அல்லது ஆங்கிலத்தில் கேட்கலாம்!)',
+    suggestedPrompts: [
+      "என் ஊரில் ஹெல்மெட் அணிவது கட்டாயமா?",
+      "சென்னையில் வேக வரம்பு என்ன?",
+      "தமிழ்நாட்டில் நோ பார்க்கிங் அபராதம் எவ்வளவு?"
+    ],
+    title: "தமிழக போக்குவரத்து AI உதவியாளர்",
+    subtitle: "தமிழ் அல்லது ஆங்கிலத்தில் கேட்கவும்",
+    contextLabel: "தமிழ்நாடு சூழல்",
+    inputPlaceholder: "அபராதத் தொகைகள், போக்குவரத்துச் சட்டங்கள் அல்லது விதிகள் பற்றி கேட்கவும்...",
+    toggleLangBtn: "Ask in English"
+  }
+};
 
 // Provide typings for SpeechRecognition
 interface SpeechRecognition extends EventTarget {
@@ -30,27 +53,40 @@ declare var webkitSpeechRecognition: {
 };
 
 export default function ChatPage() {
+  const { laws, language, toggleLanguage } = useStore();
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', role: 'assistant', content: 'Vanakkam! I am the DriveLegal TN AI Assistant. Ask me anything about traffic laws, fines, or rules in Tamil Nadu. (You can ask in English or Tamil!)' }
+    { id: '1', role: 'assistant', content: T[language].welcomeMessage }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const { laws } = useStore();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Sync welcome message if the user switches languages before starting conversation
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === 'assistant') {
+      setMessages([
+        { id: '1', role: 'assistant', content: T[language].welcomeMessage }
+      ]);
+    }
+  }, [language]);
+
+  // Synchronize Speech Recognition locale based on active language
   useEffect(() => {
     if (typeof window !== "undefined" && 'webkitSpeechRecognition' in window) {
       const recognition = new webkitSpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
-      recognition.lang = 'ta-IN'; // Tamil India
+      recognition.lang = language === 'ta' ? 'ta-IN' : 'en-IN';
       
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
-        setInput(prev => prev + " " + transcript);
+        setInput(prev => {
+          const space = prev.endsWith(" ") || prev === "" ? "" : " ";
+          return prev + space + transcript;
+        });
       };
 
       recognition.onerror = () => {
@@ -63,15 +99,19 @@ export default function ChatPage() {
 
       recognitionRef.current = recognition;
     }
-  }, []);
+  }, [language]);
 
   const toggleListening = () => {
     if (!recognitionRef.current) return alert("Speech recognition is not supported in this browser (Try Chrome).");
     if (isListening) {
       recognitionRef.current.stop();
     } else {
-      recognitionRef.current.start();
-      setIsListening(true);
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -122,7 +162,7 @@ export default function ChatPage() {
       }
     } catch (error) {
       console.error(error);
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'assistant', content: language === 'ta' ? 'மன்னிக்கவும், பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.' : 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -143,13 +183,21 @@ export default function ChatPage() {
               <Bot className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">TN Traffic AI Assistant</h1>
-              <p className="text-sm text-gray-400">Ask in Tamil or English</p>
+              <h1 className="text-xl font-bold">{T[language].title}</h1>
+              <p className="text-sm text-gray-400">{T[language].subtitle}</p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-lg">
-            <MapPin className="w-4 h-4 text-[var(--color-brand-green-light)]" />
-            <span className="text-sm font-medium text-gray-300">Tamil Nadu Context</span>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={toggleLanguage}
+              className="text-xs bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 px-4 rounded-xl border border-white/15 transition-all active:scale-95"
+            >
+              {T[language].toggleLangBtn}
+            </button>
+            <div className="hidden sm:flex items-center gap-2 bg-gray-800/50 px-4 py-2.5 rounded-xl border border-white/5">
+              <MapPin className="w-4 h-4 text-[var(--color-brand-green-light)]" />
+              <span className="text-sm font-medium text-gray-300">{T[language].contextLabel}</span>
+            </div>
           </div>
         </div>
 
@@ -189,7 +237,7 @@ export default function ChatPage() {
 
         {/* Pre-loaded Prompts */}
         <div className="px-6 pb-2 pt-2 flex flex-wrap gap-2">
-          {SUGGESTED_PROMPTS.map((prompt, i) => (
+          {T[language].suggestedPrompts.map((prompt, i) => (
             <button 
               key={i}
               onClick={() => handlePromptClick(prompt)}
@@ -207,7 +255,7 @@ export default function ChatPage() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about fine amounts, traffic laws, or rules..."
+                placeholder={T[language].inputPlaceholder}
                 className="w-full text-gray-900 bg-gray-50 border border-gray-200 rounded-xl py-4 pl-6 pr-12 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-green)] transition-all"
                 disabled={isLoading}
               />
